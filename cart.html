@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Корзина - Ювелирный магазин Венера</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .catalog-item {
+            border: 1px solid white;
+            padding: 10px;
+            margin: 10px;
+            text-align: center;
+            cursor: pointer;
+            display: inline-block;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .catalog-item img {
+            width: 150px;
+            height: auto;
+        }
+        .item-name {
+            margin-top: 8px;
+            font-weight: bold;
+        }
+        #imageDetails {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .action-buttons {
+            margin: 20px 0;
+        }
+        .search-container {
+            display: inline-block;
+            margin-left: 10px; /* Уменьшено для более близкого расположения */
+        }
+        .search-input {
+            border-radius: 20px;
+            padding: 10px;
+            font-size: 16px;
+            width: 800px;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+        }
+        .search-icon {
+            font-size: 20px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .suggestions {
+            border: 1px solid #ccc;
+            background-color: white;
+            max-height: 150px;
+            overflow-y: auto;
+            position: absolute;
+            width: 300px;
+            z-index: 1000;
+        }
+        .nav-buttons {
+            display: inline-block;
+            margin-right: 10px; /* Уменьшено для более близкого расположения */
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h2>Искусство в каждой детали</h2>
+</div>
+
+<div class="nav">
+    <h2 class="title">Корзина</h2>
+</div>
+
+<div class="action-buttons">
+    <div class="nav-buttons">
+        <button class="button" onclick="goHome()">На главную</button>
+        <button class="button" onclick="goToCatalog()">Каталог</button>
+    </div>
+    <div class="search-container">
+        <input type="text" id="searchInput" class="search-input" placeholder="Поиск в корзине" oninput="showCartSuggestions()">
+        <a href="#" class="search-icon" onclick="searchCartItems()">🔍</a>
+        <div id="cartSuggestions" class="suggestions" style="display: none;"></div>
+    </div>
+    <div class="social-icons">
+        <a href="#">🧛</a>
+        <a href="favorites.html">🖤</a>
+    </div>
+</div>
+
+<div id="cartItems" class="catalog-items"></div>
+<div id="noCartMessage" class="no-cart" style="display: none;">Корзина пуста.</div>
+
+<div id="imageDetails" style="display: none;">
+    <h3 id="imageTitle"></h3>
+    <img id="selectedImage" style="width: 200px;">
+    <p id="imageCharacteristics"></p>
+    <div class="action-buttons">
+        <button class="button" onclick="goBack()">Назад</button>
+        <button class="button" onclick="removeFromCart()">Удалить из Корзины</button>
+        <button class="button" onclick="placeOrder()">Заказать</button>
+    </div>
+</div>
+
+<script>
+    let currentItem = null; // Текущий выбранный товар
+    let currentIndex = -1; // Индекс текущего товара
+
+    function displayCartItems() {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const cartItems = document.getElementById('cartItems');
+        const noCartMessage = document.getElementById('noCartMessage');
+
+        if (cart.length === 0) {
+            noCartMessage.style.display = 'block';
+            cartItems.style.display = 'none';
+            return;
+        }
+
+        noCartMessage.style.display = 'none';
+        cartItems.style.display = 'flex';
+        cartItems.innerHTML = '';
+
+        cart.forEach((item, index) => {
+            const div = document.createElement('div');
+            div.className = 'catalog-item';
+            div.onclick = () => showImageDetails(item, index);
+            div.innerHTML = `
+                <img src="${item.src}" alt="${item.description}">
+                <div class="item-name">${item.name}</div>
+            `;
+            cartItems.appendChild(div);
+        });
+    }
+
+    function showImageDetails(item, index) {
+        currentItem = item;
+        currentIndex = index;
+        document.getElementById('imageTitle').innerText = item.name || 'Неизвестный товар';
+        document.getElementById('selectedImage').src = item.src;
+        document.getElementById('imageCharacteristics').innerText = item.description || 'Нет описания';
+
+        document.getElementById('imageDetails').style.display = 'block';
+        document.getElementById('cartItems').style.display = 'none';
+    }
+
+    function goHome() {
+        window.location.href = 'index.html';
+    }
+
+    function goToCatalog() {
+        window.location.href = 'catalog.html';
+    }
+
+    function goBack() {
+        document.getElementById('imageDetails').style.display = 'none';
+        document.getElementById('cartItems').style.display = 'flex';
+    }
+
+    function removeFromCart() {
+        if (currentIndex !== -1) {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart.splice(currentIndex, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert("Товар удалён из Корзины.");
+            displayCartItems(); // Обновить список корзины
+            goBack(); // Вернуться к списку корзины
+        }
+    }
+
+    function placeOrder() {
+        alert("Заказ оформлен!");
+    }
+
+    function showCartSuggestions() {
+        const input = document.getElementById('searchInput').value.trim();
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const suggestionsContainer = document.getElementById('cartSuggestions');
+        suggestionsContainer.innerHTML = ''; // Очистить предыдущие подсказки
+
+        if (input) {
+            const filteredCart = cart.filter(item => item.name.toLowerCase().includes(input.toLowerCase()));
+            filteredCart.forEach(item => {
+                const suggestionDiv = document.createElement('div');
+                suggestionDiv.className = 'suggestion-item';
+                suggestionDiv.innerText = item.name;
+                suggestionDiv.onclick = () => {
+                    document.getElementById('searchInput').value = item.name;
+                    suggestionsContainer.innerHTML = '';
+                    searchCartItems(); // Выполнить поиск
+                };
+                suggestionsContainer.appendChild(suggestionDiv);
+            });
+
+            suggestionsContainer.style.display = filteredCart.length > 0 ? 'block' : 'none';
+        } else {
+            suggestionsContainer.style.display = 'none';
+        }
+    }
+
+    function searchCartItems() {
+        const input = document.getElementById('searchInput').value.trim();
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        if (input) {
+            const filteredCart = cart.filter(item => item.name.toLowerCase().includes(input.toLowerCase()));
+            displayFilteredCartItems(filteredCart);
+
+            if (filteredCart.length === 0) {
+                alert(`Товар "${input}" не найден в корзине.`);
+            }
+        } else {
+            alert("Пожалуйста, введите название товара для поиска.");
+            displayCartItems(); // Показать все товары, если поле ввода пустое
+        }
+    }
+
+    function displayFilteredCartItems(filteredCart) {
+        const cartItems = document.getElementById('cartItems');
+        cartItems.innerHTML = '';
+        if (filteredCart.length === 0) {
+            document.getElementById('noCartMessage').style.display = 'block';
+            return;
+        } else {
+            document.getElementById('noCartMessage').style.display = 'none';
+        }
+
+        filteredCart.forEach((item, index) => {
+            const div = document.createElement('div');
+            div.className = 'catalog-item';
+            div.onclick = () => showImageDetails(item, index);
+            div.innerHTML = `
+                <img src="${item.src}" alt="${item.description}">
+                <div class="item-name">${item.name}</div>
+            `;
+            cartItems.appendChild(div);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', displayCartItems);
+</script>
+
+<div class="about">
+    <h3>О нас</h3>
+    <p>Частное предприятие «Космос жди» Республика Беларусь, 220000, г. М, ул. В, 16, пом. 6,
+        каб. №6-19, 72-ий этаж. Свидетельство о регистрации выдано 03.03.2ХХХ г. Мингорисполкомом. УНП 190696758. Дата регистрации в Торговом реестре РБ: 08.05.2ХХХ г. Специальное разрешение (лицензия) на деятельность, связанную с драгоценными металлами и драгоценными камнями № 02200/21-01084, выдано Министерством финансов Республики Беларусь. Режим работы менеджера интернет-магазина: пн-чт 9.00-18.00, пт 9.00-17.00, сб-вс выходной.</p>
+</div>
+
+<div class="footer">
+    <div>Кольца | Браслеты | Подвески | Цепи | Акции</div>
+    <div class="social-icons">
+        <a href="#">Instagram</a>
+        <a href="#">TikTok</a>
+        <a href="#">VK</a>
+    </div>
+</div>
+</body>
+</html>

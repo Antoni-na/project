@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ювелирный магазин Венера</title>
+    <style>
+        body {
+            font-family: 'Lora', serif;
+            background-color: #f1f0dc;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: black;
+            color: #ffffff;
+            text-align: center;
+            padding: 10px 0;
+            width: 100%;
+        }
+        .header h2 {
+            font-style: italic;
+            font-size: 24px;
+            margin: 0;
+        }
+        .title {
+            text-align: center;
+            margin-top: 10px;
+        }
+        .title h1 {
+            font-size: 64px;
+            margin: 0;
+        }
+        .title h2 {
+            font-size: 32px;
+            margin: 0;
+        }
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            font-size: 24px;
+            color: black;
+        }
+        .nav a {
+            color: black;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .button {
+            background-color: black;
+            color: white;
+            padding: 10px 20px;
+            font-size: 24px;
+            border: none;
+            cursor: pointer;
+            margin: 0 10px;
+        }
+        .search {
+            border-radius: 20px;
+            padding: 10px;
+            font-size: 24px;
+            width: 300px;
+        }
+        .full-width-image {
+            width: 100%; /* Растягивает изображение на всю ширину контейнера */
+            height: auto; /* Сохраняет пропорции изображения */
+        }
+        .catalog-title {
+            text-align: center;
+            font-size: 36px;
+            margin: 20px 0;
+        }
+        .categories {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .category {
+            text-align: center;
+            margin: 0 20px;
+        }
+        .category img {
+            width: 194px;
+            height: 164px;
+            margin-bottom: 10px; /* Отступ между изображением и названием */
+        }
+        .about {
+            background-color: black;
+            color: white;
+            padding: 20px;
+            text-align: left;
+        }
+        .about h3 {
+            text-align: center;
+            font-size: 24px;
+        }
+        .about p {
+            font-size: 15px;
+        }
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 20px;
+            font-size: 15px;
+            color: white;
+            background-color: black;
+        }
+        .social-icons a {
+            margin: 0 5px;
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h2>Искусство в каждой детале...</h2>
+</div>
+
+<div class="title">
+    <h1>ВЕНЕРА</h1>
+    <h2>ювелирный магазин</h2>
+</div>
+
+<div class="nav">
+    <a href="#" onclick="alert('Позвонить');">+375(33)3333-33-33</a>
+    <a href="#" onclick="alert('Акции');">Акции</a>
+    <a href="#" onclick="alert('Оплата');">Оплата</a>
+    <a href="#" onclick="alert('Еще');">Еще</a>
+</div>
+
+<div class="buttons">
+    <button class="button">Каталог</button>
+    <input type="text" class="search" placeholder="Поиск по каталогу">
+    <div>
+        <a href="#">👤 Мой профиль</a>
+        <a href="#">❤️ Избранное</a>
+        <a href="#">🛒 Моя корзина</a>
+    </div>
+</div>
+
+<div>
+    <img src="img.png" alt="Изображение" class="full-width-image" style="width: 1540px; height: 177px;">
+</div>
+
+<div class="catalog-title">КАТАЛОГ</div>
+
+<div class="categories">
+    <div class="category">
+        <img src="chain.png" alt="Цепи">
+        <a href="#">Цепи</a>
+    </div>
+    <div class="category">
+        <img src="pendant.png" alt="Подвески">
+        <a href="#">Подвески</a>
+    </div>
+    <div class="category">
+        <img src="ring.png" alt="Кольца">
+        <a href="#">Кольца</a>
+    </div>
+    <div class="category">
+        <img src="earrings.png" alt="Серьги">
+        <a href="#">Серьги</a>
+    </div>
+</div>
+
+<div class="about">
+    <h3>О нас</h3>
+    <p>Частное предприятие «Космос жди» Республика Беларусь, 220000, г. М, ул. В, 16, пом. 6, каб. №6-19, 72-ий этаж. Свидетельство о регистрации выдано 03.03.2ХХХ г. Мингорисполкомом. УНП 190696758. Дата регистрации в Торговом реестре РБ: 08.05.2ХХХ г. Специальное разрешение (лицензия) на деятельность, связанную с драгоценными металлами и драгоценными камнями № 02200/21-01084, выданно Министерством финансов Республики Беларусь. Режим работы менеджера интернет-магазина: пн-чт 9.00-18.00, пт 9.00-17.00, сб-вс выходной.</p>
+    <p>«Условия оплаты» «Условия доставки» «Условия узода за ювелирными украшениями» «Правила ухода за ювелирными изделиями»</p>
+</div>
+
+<div class="footer">
+    <div>Кольца | Браслеты | Подвески | Цепи | Акции</div>
+    <div class="social-icons">
+        <a href="#">Instagram</a>
+        <a href="#">TikTok</a>
+        <a href="#">VK</a>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ювелирный магазин Венера</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Стили для выпадающего списка предложений */
+        #suggestions {
+            border: 1px solid #ccc;
+            max-height: 150px;
+            overflow-y: auto;
+            position: absolute;
+            background: white;
+            z-index: 1000;
+            display: none; /* Скрыт по умолчанию */
+        }
+        .suggestion-item {
+            padding: 10px;
+            cursor: pointer;
+        }
+        .suggestion-item:hover {
+            background: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h2>Искусство в каждой детале...</h2>
+</div>
+
+<div class="title">
+    <h1>ВЕНЕРА</h1>
+    <h2>ювелирный магазин</h2>
+</div>
+
+<div class="nav">
+    <a href="#" onclick="alert('Позвонить');">+375(33)3333-33-33</a>
+    <a href="#" onclick="alert('Акции');">Акции</a>
+    <a href="#" onclick="alert('Оплата');">Оплата</a>
+    <a href="#" onclick="alert('Еще');">Еще</a>
+</div>
+
+<div class="buttons">
+    <a href="catalog.html" class="button">Каталог</a>
+    <div style="position: relative;">
+        <input type="text" class="search" id="searchInput" placeholder="Поиск по каталогу" oninput="searchItems()">
+        <div id="suggestions"></div> <!-- Контейнер для предложений -->
+    </div>
+    <div class="social-icons">
+        <a href="#" class="search-icon" onclick="searchItems()">🔍</a>
+        <a href="#">🧛‍♀️</a>
+        <a href="favorites.html">🖤</a>
+        <a href="cart.html">🛒</a>
+    </div>
+</div>
+
+<div>
+    <img src="img.png" alt="Изображение" class="full-width-image">
+</div>
+
+<div class="catalog">
+    <h2>КАТАЛОГ</h2>
+    <div class="catalog-items" id="catalogItems">
+        <div class="catalog-item" data-category="Цепи" onclick="navigateToCatalog('Цепи')">
+            <img src="chain.png" alt="Цепи">
+            <p>Цепи</p>
+        </div>
+
+        <div class="catalog-item" data-category="Подвески" onclick="navigateToCatalog('Подвески')">
+            <img src="pendant.png" alt="Подвески">
+            <p>Подвески</p>
+        </div>
+
+        <div class="catalog-item" data-category="Кольца" onclick="navigateToCatalog('Кольца')">
+            <img src="ring.png" alt="Кольца">
+            <p>Кольца</p>
+        </div>
+
+        <div class="catalog-item" data-category="Серьги" onclick="navigateToCatalog('Серьги')">
+            <img src="earrings.png" alt="Серьги">
+            <p>Серьги</p>
+        </div>
+    </div>
+</div>
+
+<div class="about">
+    <h3>О нас</h3>
+    <p>Частное предприятие «Космос жди» Республика Беларусь, 220000, г. М, ул. В, 16, пом. 6, каб. №6-19, 72-ий этаж. Свидетельство о регистрации выдано 03.03.2ХХХ г. Мингорисполкомом. УНП 190696758. Дата регистрации в Торговом реестре РБ: 08.05.2ХХХ г. Специальное разрешение (лицензия) на деятельность, связанную с драгоценными металлами и драгоценными камнями № 02200/21-01084, выданно Министерством финансов Республики Беларусь. Режим работы менеджера интернет-магазина: пн-чт 9.00-18.00, пт 9.00-17.00, сб-вс выходной.</p>
+</div>
+
+<div class="footer">
+    <div>Кольца | Браслеты | Подвески | Цепи | Акции</div>
+    <div class="social-icons">
+        <a href="#">Instagram</a>
+        <a href="#">TikTok</a>
+        <a href="#">VK</a>
+    </div>
+</div>
+
+<script>
+    // Навигация по каталогу
+    function navigateToCatalog(category) {
+        window.location.href = `catalog.html?category=${encodeURIComponent(category)}`;
+    }
+
+    // Поиск с предложениями
+    function searchItems() {
+        const input = document.getElementById('searchInput').value.trim(); // Убираем лишние пробелы
+        const suggestions = document.getElementById('suggestions');
+        suggestions.innerHTML = ''; // Очистить предыдущие предложения
+        suggestions.style.display = 'none'; // Скрыть список предложений
+
+        if (input) {
+            const items = document.querySelectorAll('.catalog-item');
+            let hasSuggestions = false; // Флаг для проверки наличия предложений
+
+            items.forEach(item => {
+                const category = item.getAttribute('data-category'); // Сохраняем название категории без изменения регистра
+                if (category.toLowerCase().includes(input.toLowerCase())) { // Поиск с учётом регистра
+                    hasSuggestions = true;
+                    const suggestionItem = document.createElement('div');
+                    suggestionItem.textContent = category; // Текст предложения
+                    suggestionItem.classList.add('suggestion-item');
+                    suggestionItem.onclick = () => {
+                        document.getElementById('searchInput').value = category; // Установить в поле ввода
+                        navigateToCatalog(category); // Перейти к категории
+                        suggestions.innerHTML = ''; // Очистить предложения
+                        suggestions.style.display = 'none'; // Скрыть список предложений
+                    };
+                    suggestions.appendChild(suggestionItem);
+                }
+            });
+
+            if (hasSuggestions) {
+                suggestions.style.display = 'block'; // Показать список предложений
+            }
+        }
+    }
+</script>
+
+</body>
+</html>

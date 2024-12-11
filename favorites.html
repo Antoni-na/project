@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Избранное - Ювелирный магазин Венера</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        #imageDetails {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .button {
+            margin: 5px;
+        }
+        .catalog-item img {
+            width: 150px; /* Ширина изображений */
+            height: auto; /* Сохранить пропорции */
+        }
+        .item-name {
+            font-weight: bold; /* Жирное название */
+            margin-top: 8px; /* Отступ сверху для названия */
+        }
+        .search-container {
+            position: relative;
+            display: inline-block;
+        }
+        .search-input {
+            border-radius: 20px; /* Закругленные углы */
+            padding: 10px; /* Отступ внутри поля */
+            font-size: 16px; /* Размер шрифта */
+            width: 800px; /* Ширина поля */
+            border: 1px solid #ccc; /* Светлая рамка */
+            background-color: #f0f0f0; /* Светлый фон */
+            margin-left: 30px;
+        }
+        .search-icon {
+            font-size: 20px; /* Размер иконки поиска */
+            cursor: pointer; /* Указатель при наведении */
+        }
+        .suggestions {
+            border: 1px solid #ccc;
+            background-color: white;
+            max-height: 150px;
+            overflow-y: auto;
+            position: absolute;
+            width: 800px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h2>Искусство в каждой детали</h2>
+</div>
+
+<div class="nav">
+    <h2 class="title">Избранное</h2>
+</div>
+
+<div class="action-buttons">
+    <button class="button" onclick="goHome()">На главную</button>
+    <button class="button" onclick="goToCatalog()">Каталог</button>
+    <div class="search-container">
+        <input type="text" id="searchInput" class="search-input" placeholder="Поиск по избранному" oninput="showSuggestions()">
+        <a href="#" class="search-icon" onclick="searchItems()">🔍</a>
+        <div id="suggestions" class="suggestions" style="display: none;"></div>
+    </div>
+    <div class="social-icons">
+        <a href="#">🧛</a>
+        <a href="cart.html">🛒</a>
+    </div>
+</div>
+
+<div id="favoritesItems" class="catalog-items"></div>
+<div id="noFavoritesMessage" class="no-favorites" style="display: none;">Нет избранных товаров.</div>
+
+<div id="imageDetails" style="display: none;">
+    <h3 id="imageTitle"></h3>
+    <img id="selectedImage" style="width: 200px;">
+    <p id="imageCharacteristics"></p>
+    <button class="button" onclick="goBack()">Назад</button>
+    <button class="button" onclick="removeFromFavorites()">Удалить из Избранного</button>
+    <button class="button" onclick="addToCart()">Добавить в Корзину</button>
+</div>
+
+<script>
+    let currentItem = null; // Текущий выбранный товар
+    let currentIndex = -1; // Индекс текущего товара
+
+    function displayFavoriteItems() {
+        const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+        const favoritesItems = document.getElementById('favoritesItems');
+        const noFavoritesMessage = document.getElementById('noFavoritesMessage');
+
+        if (favorites.length === 0) {
+            noFavoritesMessage.style.display = 'block';
+            favoritesItems.style.display = 'none';
+            return;
+        }
+
+        noFavoritesMessage.style.display = 'none';
+        favoritesItems.style.display = 'flex';
+        favoritesItems.innerHTML = '';
+
+        favorites.forEach((item, index) => {
+            const div = document.createElement('div');
+            div.className = 'catalog-item';
+            div.style.border = '1px solid white';
+            div.style.padding = '10px';
+            div.style.cursor = 'pointer';
+            div.innerHTML = `
+                <img src="${item.src}" alt="${item.description}">
+                <p class="item-name">${item.name}</p>
+            `;
+            div.onclick = () => showImageDetails(item.src, item.description, item.name, index);
+            favoritesItems.appendChild(div);
+        });
+    }
+
+    function showImageDetails(imgSrc, description, name, index) {
+        currentItem = { src: imgSrc, description: description }; // Сохранение текущего товара
+        currentIndex = index; // Сохранение индекса текущего товара
+        document.getElementById('imageTitle').innerText = name;
+        document.getElementById('selectedImage').src = imgSrc;
+        document.getElementById('imageCharacteristics').innerText = description;
+
+        document.getElementById('imageDetails').style.display = 'block';
+        document.getElementById('favoritesItems').style.display = 'none';
+    }
+
+    function goBack() {
+        document.getElementById('imageDetails').style.display = 'none';
+        document.getElementById('favoritesItems').style.display = 'flex';
+    }
+
+    function goHome() {
+        window.location.href = 'index.html';
+    }
+
+    function goToCatalog() {
+        window.location.href = 'catalog.html';
+    }
+
+    function searchItems() {
+        const input = document.getElementById('searchInput').value.trim();
+        const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+
+        if (input) {
+            const filteredFavorites = favorites.filter(item => item.name.toLowerCase().includes(input.toLowerCase()));
+            displayFilteredItems(filteredFavorites);
+
+            if (filteredFavorites.length === 0) {
+                alert(`Товар "${input}" не найден в избранном.`);
+            }
+        } else {
+            alert("Пожалуйста, введите название товара для поиска.");
+            displayFavoriteItems();
+        }
+    }
+
+    function displayFilteredItems(filteredFavorites) {
+        const favoritesItems = document.getElementById('favoritesItems');
+        favoritesItems.innerHTML = '';
+
+        if (filteredFavorites.length === 0) {
+            document.getElementById('noFavoritesMessage').style.display = 'block';
+            return;
+        } else {
+            document.getElementById('noFavoritesMessage').style.display = 'none';
+        }
+
+        filteredFavorites.forEach((item, index) => {
+            const div = document.createElement('div');
+            div.className = 'catalog-item';
+            div.style.border = '1px solid white';
+            div.style.padding = '10px';
+            div.style.cursor = 'pointer';
+            div.innerHTML = `
+                <img src="${item.src}" alt="${item.description}">
+                <p class="item-name">${item.name}</p>
+            `;
+            div.onclick = () => showImageDetails(item.src, item.description, item.name, index);
+            favoritesItems.appendChild(div);
+        });
+    }
+
+    function showSuggestions() {
+        const input = document.getElementById('searchInput').value.trim();
+        const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+        const suggestionsContainer = document.getElementById('suggestions');
+        suggestionsContainer.innerHTML = '';
+
+        if (input) {
+            const filteredFavorites = favorites.filter(item => item.name.toLowerCase().includes(input.toLowerCase()));
+            filteredFavorites.forEach(item => {
+                const suggestionDiv = document.createElement('div');
+                suggestionDiv.className = 'suggestion-item';
+                suggestionDiv.innerText = item.name;
+                suggestionDiv.onclick = () => {
+                    document.getElementById('searchInput').value = item.name;
+                    suggestionsContainer.innerHTML = '';
+                    searchItems();
+                };
+                suggestionsContainer.appendChild(suggestionDiv);
+            });
+
+            suggestionsContainer.style.display = filteredFavorites.length > 0 ? 'block' : 'none';
+        } else {
+            suggestionsContainer.style.display = 'none';
+        }
+    }
+
+    function removeFromFavorites() {
+        const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+        if (currentIndex !== -1) {
+            favorites.splice(currentIndex, 1);
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            goBack();
+            alert("Товар удалён из Избранного.");
+            displayFavoriteItems();
+        }
+    }
+
+    function addToCart() {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        if (currentItem && !cart.some(item => item.src === currentItem.src)) {
+            cart.push(currentItem);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert(`${currentItem.description} добавлено в Корзину!`);
+        } else {
+            alert(`${currentItem.description} уже в Корзине.`);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', displayFavoriteItems);
+</script>
+
+<div class="about">
+    <h3>О нас</h3>
+    <p>Частное предприятие «Космос жди» Республика Беларусь, 220000, г. М, ул. В, 16, пом. 6,
+        каб. №6-19, 72-ий этаж. Свидетельство о регистрации выдано 03.03.2ХХХ г. Мингорисполкомом. УНП 190696758. Дата регистрации в Торговом реестре РБ: 08.05.2ХХХ г. Специальное разрешение (лицензия) на деятельность, связанную с драгоценными металлами и драгоценными камнями № 02200/21-01084, выдано Министерством финансов Республики Беларусь. Режим работы менеджера интернет-магазина: пн-чт 9.00-18.00, пт 9.00-17.00, сб-вс выходной.</p>
+</div>
+
+<div class="footer">
+    <div>Кольца | Браслеты | Подвески | Цепи | Акции</div>
+    <div class="social-icons">
+        <a href="#">Instagram</a>
+        <a href="#">TikTok</a>
+        <a href="#">VK</a>
+    </div>
+</div>
+</body>
+</html>

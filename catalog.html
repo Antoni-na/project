@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Каталог - Ювелирный магазин Венера</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Стили для модального окна с детальной информацией о товаре */
+        #imageDetails {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Центрирование содержимого */
+            text-align: center;
+            margin-top: 20px;
+        }
+        .item-icons {
+            display: flex;
+            justify-content: center; /* Центрирование иконок */
+            gap: 20px; /* Отступ между иконками */
+            margin-top: 10px; /* Отступ сверху для иконок */
+        }
+        .item-icons a {
+            font-size: 24px; /* Размер иконок */
+            text-decoration: none; /* Убираем подчеркивание */
+            color: black; /* Цвет иконок */
+        }
+        .catalog {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Центрирование каталога */
+        }
+        .suggestions {
+            position: absolute;
+            background: white;
+            border: 1px solid #ccc;
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+        .suggestion-item {
+            padding: 10px;
+            cursor: pointer;
+        }
+        .suggestion-item:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h2>Искусство в каждой детале...</h2>
+</div>
+
+<div class="title">
+    <h1>КАТАЛОГ</h1>
+</div>
+
+<div class="buttons">
+    <a href="index.html" class="button">На главную</a>
+    <input type="text" class="search" id="searchInput" placeholder="Поиск по каталогу">
+    <div class="social-icons">
+        <a href="#">🧛‍♀️</a>
+        <a href="favorites.html">🖤</a>
+        <a href="cart.html">🛒</a>
+    </div>
+</div>
+
+<div class="catalog-container">
+    <div class="sidebar">
+        <h3>Категории</h3>
+        <ul>
+            <li><a href="catalog.html?category=Кольца">Кольца</a></li>
+            <li><a href="catalog.html?category=Подвески">Подвески</a></li>
+            <li><a href="catalog.html?category=Цепи">Цепи</a></li>
+            <li><a href="catalog.html?category=Серьги">Серьги</a></li>
+        </ul>
+    </div>
+
+    <div class="catalog">
+        <h2 id="catalogTitle"></h2>
+        <div class="catalog-items" id="catalogItems"></div>
+
+        <!-- Details section -->
+        <div id="imageDetails" style="display: none;">
+            <h3 id="imageTitle"></h3>
+            <img id="selectedImage" src="" alt="" style="width: 300px; max-width: 100%; height: auto;">
+            <p id="imageCharacteristics"></p>
+            <div class="item-icons">
+                <button class="button" onclick="goBack()">Назад</button>
+                <a href="#" id="addToFavorites" onclick="addToFavorites()">🖤</a>
+                <a href="#" id="addToCart" onclick="addToCart()">🛒</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="suggestions" class="suggestions" style="display: none;"></div>
+
+<div class="about">
+    <h3>О нас</h3>
+    <p>Частное предприятие «Космос жди» Республика Беларусь, 220000, г. М, ул. В, 16, пом. 6,
+        каб. №6-19, 72-ий этаж. Свидетельство о регистрации выдано 03.03.2ХХХ г. Мингорисполкомом. УНП 190696758. Дата регистрации в Торговом реестре РБ: 08.05.2ХХХ г. Специальное разрешение (лицензия) на деятельность, связанную с драгоценными металлами и драгоценными камнями № 02200/21-01084, выданно Министерством финансов Республики Беларусь. Режим работы менеджера интернет-магазина: пн-чт 9.00-18.00, пт 9.00-17.00, сб-вс выходной.</p>
+</div>
+
+<div class="footer">
+    <div>Кольца | Браслеты | Подвески | Цепи | Акции</div>
+    <div class="social-icons">
+        <a href="#">Instagram</a>
+        <a href="#">TikTok</a>
+        <a href="#">VK</a>
+    </div>
+</div>
+
+<script src="catalog.js"></script>
+
+</body>
+</html>
